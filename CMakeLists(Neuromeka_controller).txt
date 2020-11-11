@@ -1,0 +1,267 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(ndr_downscale)
+
+## Compile as C++11, supported in ROS Kinetic and newer
+add_compile_options(-std=c++11)
+
+## Find catkin macros and libraries
+## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
+## is used, also find other catkin packages
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  message_generation
+  ##eigen_conversions
+)
+
+## Declare ROS messages and services
+add_message_files(FILES one.msg two.msg three.msg seven.msg six.msg twentyone.msg trans.msg buttons.msg)
+
+
+## Generate services in the 'srv' folder
+#add_service_files(
+#  FILES
+#  MoveArm.srv
+#)
+## Generate added messages and services
+generate_messages(DEPENDENCIES std_msgs)
+
+catkin_package(
+  ##INCLUDE_DIRS include
+  LIBRARIES ndr_downscale
+  CATKIN_DEPENDS roscpp std_msgs
+  DEPENDS system_lib
+)
+
+###########
+## Build ##
+###########
+## Specify additional locations of header files
+## Your package locations should be listed before other locations
+include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    /usr/xenomai/include
+    /opt/etherlab/include
+)
+
+include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} /usr/lib/} )
+include_directories(include ${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS} /usr/include/} )
+include_directories( /usr/xenomai/include /home/gene/catkin_ws/src/ndr_downscale/include)
+include_directories( /home/gene/catkin_ws/src/ndr_downscale/include)
+#include_directories( /home/gene/openhaptics_3.4-0-developer-edition-amd64/usr/include)
+include_directories(  ${catkin_INCLUDE_DIRS} ./include)
+
+################### sub program plugin #################################################
+############# Select between sub_ndr_downscale_torqueMODE/sub_ndr_downscale_positionMODE
+############# Torque MODE:
+
+#[[
+add_executable(sub_ndr_downscale_torqueMODE src/sub_ndr_downscale_torqueMODE.cpp)
+target_link_libraries(sub_ndr_downscale_torqueMODE ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so
+
+/home/gene/catkin_ws/src/ndr_downscale/add/libNRMKHelper64.so
+/home/gene/catkin_ws/src/ndr_downscale/add/libServotronix_motion_control_ltd__CDHDLib.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoNet.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoUtil.so
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoFoundation.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libethercat.so.1.0.0
+/home/gene/catkin_ws/src/ndr_downscale/add/EcatDataSocket.o
+)
+add_dependencies(sub_ndr_downscale_torqueMODE ndr_downscale_generate_messages_cpp)
+]]
+
+############# Position MODE:
+add_executable(sub_ndr_downscale_positionMODE src/sub_ndr_downscale_positionMODE.cpp)
+target_link_libraries(sub_ndr_downscale_positionMODE ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so
+
+/home/gene/catkin_ws/src/ndr_downscale/add/libNRMKHelper64.so
+/home/gene/catkin_ws/src/ndr_downscale/add/libServotronix_motion_control_ltd__CDHDLib.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoNet.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoUtil.so
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoFoundation.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libethercat.so.1.0.0
+/home/gene/catkin_ws/src/ndr_downscale/add/EcatDataSocket.o
+)
+add_dependencies(sub_ndr_downscale_positionMODE ndr_downscale_generate_messages_cpp)
+
+
+#[[
+################### test sub BACKUP ###################################################
+add_executable(sub_ndr_downscale_backup_modify src/sub_ndr_downscale_backup_modify.cpp)
+target_link_libraries(sub_ndr_downscale_backup_modify ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so
+
+/home/gene/catkin_ws/src/ndr_downscale/add/libNRMKHelper64.so
+/home/gene/catkin_ws/src/ndr_downscale/add/libServotronix_motion_control_ltd__CDHDLib.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoNet.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoUtil.so
+/home/gene/catkin_ws/src/ndr_downscale/add/libPocoFoundation.a
+/home/gene/catkin_ws/src/ndr_downscale/add/libethercat.so.1.0.0
+/home/gene/catkin_ws/src/ndr_downscale/add/EcatDataSocket.o
+)
+add_dependencies(sub_ndr_downscale_backup_modify ndr_downscale_generate_messages_cpp)
+]]
+
+################### Main Algorithm #################################################
+add_executable(ndr_data_test src/ndr_data_test.cpp)
+target_link_libraries(ndr_data_test ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+
+#[[
+####################################################################################
+add_executable(ndr_impedance_v3 src/ndr_impedance_v3.cpp)
+target_link_libraries(ndr_impedance_v3 ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_impedance_v4 src/ndr_impedance_v4.cpp)
+target_link_libraries(ndr_impedance_v4 ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_impedance_v4_qtnion src/ndr_impedance_v4_qtnion.cpp)
+target_link_libraries(ndr_impedance_v4_qtnion ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_impedance_v5_trans_only src/ndr_impedance_v5_trans_only.cpp)
+target_link_libraries(ndr_impedance_v5_trans_only ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_impedance_v5_trans_only_ee_frame src/ndr_impedance_v5_trans_only_ee_frame.cpp)
+target_link_libraries(ndr_impedance_v5_trans_only_ee_frame ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_admittance_v3 src/ndr_admittance_v3.cpp)
+target_link_libraries(ndr_admittance_v3 ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_cptorque_v1 src/ndr_cptorque_v1.cpp)
+target_link_libraries(ndr_cptorque_v1 ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(ndr_friction_identification src/ndr_friction_identification.cpp)
+target_link_libraries(ndr_friction_identification ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(ndr_friction_test src/ndr_friction_test.cpp)
+target_link_libraries(ndr_friction_test ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(ndr_hybrid_impedance_v1_duration_SW src/ndr_hybrid_impedance_v1_duration_SW.cpp)
+target_link_libraries(ndr_hybrid_impedance_v1_duration_SW ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(ndr_hybrid_impedance_v2_duration_SW_REF_paper src/ndr_hybrid_impedance_v2_duration_SW_REF_paper.cpp)
+target_link_libraries(ndr_hybrid_impedance_v2_duration_SW_REF_paper ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_hybrid_impedance_v1_FT_SW src/ndr_hybrid_impedance_v1_FT_SW.cpp)
+target_link_libraries(ndr_hybrid_impedance_v1_FT_SW ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(ndr_hybrid_impedance_v3_duration_SW_rv_method src/ndr_hybrid_impedance_v3_duration_SW_rv_method.cpp)
+target_link_libraries(ndr_hybrid_impedance_v3_duration_SW_rv_method ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(ndr_hybrid_impedance_v3_duration_SW_rv2_method src/ndr_hybrid_impedance_v3_duration_SW_rv2_method.cpp)
+target_link_libraries(ndr_hybrid_impedance_v3_duration_SW_rv2_method ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+
+add_executable(ndr_initialpos_pipe_trj src/ndr_initialpos_pipe_trj.cpp)
+target_link_libraries(ndr_initialpos_pipe_trj ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_hybrid_impedance_v3_pipe_trj_event_based_method src/ndr_hybrid_impedance_v3_pipe_trj_event_based_method.cpp)
+target_link_libraries(ndr_hybrid_impedance_v3_pipe_trj_event_based_method ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(ndr_impdeance_v5_trans_only_pipe src/ndr_impdeance_v5_trans_only_pipe.cpp)
+target_link_libraries(ndr_impdeance_v5_trans_only_pipe ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+############# tien code 
+
+add_executable(ndr_toinitconfig_tien src/ndr_toinitconfig_tien.cpp)
+target_link_libraries(ndr_toinitconfig_tien ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(ndr_torqueopt_tien src/ndr_torqueopt_tien.cpp)
+target_link_libraries(ndr_torqueopt_tien ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+
+add_executable(ndr_torqueopt_tien_1 src/ndr_torqueopt_tien_1.cpp)
+target_link_libraries(ndr_torqueopt_tien_1 ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+#add_executable(master_device src/master_device.cpp)
+#add_dependencies(master_device ndr_downscale_generate_messages_cpp)
+#target_link_libraries(master_device HD HDU ${catkin_LIBRARIES}
+#/usr/xenomai/lib/libnative.so 
+#/usr/xenomai/lib/libxenomai.so)
+
+# Teleoperation
+add_executable(hd_pub src/hd_pub.cpp)
+add_dependencies(hd_pub ndr_downscale_generate_messages_cpp)
+target_link_libraries(hd_pub HD HDU ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+add_executable(hd_pub_v2 src/hd_pub_v2.cpp)
+add_dependencies(hd_pub_v2 ndr_downscale_generate_messages_cpp)
+target_link_libraries(hd_pub_v2 HD HDU ${catkin_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+
+add_executable(teleoperation src/teleoperation.cpp)
+target_link_libraries(teleoperation ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES}
+/usr/xenomai/lib/libnative.so 
+/usr/xenomai/lib/libxenomai.so)
+
+#add_dependencies(teleoperation ndr_downscale_generate_messages_cpp)
+]]
+
+
+
+### below ongoing ######
+
